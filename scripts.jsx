@@ -33,12 +33,11 @@ const Transaction = {
 
       App.reload();
    },
-
    incomes() {
       let income = 0;
 
       Transaction.all.forEach((transactions) => {
-         if (transactions.amount > 0) {
+         if (transactions.typeTransaction == "receive") {
             income += transactions.amount;
          }
       })
@@ -49,7 +48,7 @@ const Transaction = {
       let expense = 0;
 
       Transaction.all.forEach((transactions) => {
-         if (transactions.amount < 0) {
+         if (transactions.typeTransaction == "pay") {
             expense += transactions.amount;
          }
       })
@@ -57,7 +56,7 @@ const Transaction = {
       return expense
    },
    total() {
-      return Transaction.incomes() + Transaction.expenses();
+      return Transaction.incomes() - Transaction.expenses();
    }
 }
 
