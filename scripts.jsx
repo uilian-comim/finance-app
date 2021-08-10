@@ -28,7 +28,7 @@ const Transaction = {
       App.reload();
    },
 
-   remove(index){
+   remove(index) {
       Transaction.all.splice(index, 1);
 
       App.reload();
@@ -72,9 +72,9 @@ const DOM = {
    },
 
    innerHTMLTransaction(transaction, index) {
-      const CSSclass = transaction.amount > 0 ? "income" : "expense";
+      const CSSclass = transaction.typeTransaction == "receive" ? "income" : "expense";
 
-      const amount = Utils.formatCurrency(transaction.amount);
+      const amount = Utils.formatCurrency(transaction.amount, transaction.typeTransaction);
 
       const html = `
          <td class="description">${transaction.description}</td>
@@ -89,6 +89,18 @@ const DOM = {
 
    },
 
+   messageBox(type, message) {
+      const messageError = document.querySelector(".message");
+      const imgMessage = document.querySelector(".message img");
+      const progressBar = document.querySelector(".message div");
+      const messageH3 = document.querySelector(".message h3 strong");
+      imgMessage.setAttribute("src", `./assets/${type}.svg`)
+      messageError.classList.add(`${type}`);
+      progressBar.classList.add(`${type}`);
+      messageH3.innerHTML = `${message}`;
+      setTimeout(() => { messageError.classList.remove(`${type}`); imgMessage.setAttribute("src", ""); progressBar.classList.remove(`${type}`); messageH3.innerHTML = ""}, 10000)
+   },
+
    updateBalance() {
       document.getElementById("incomeDisplay").innerHTML = Utils.formatCurrency(Transaction.incomes());
       document.getElementById("expenseDisplay").innerHTML = Utils.formatCurrency(Transaction.expenses());
@@ -100,16 +112,16 @@ const DOM = {
 }
 
 const Utils = {
-   formatDate(date){
+   formatDate(date) {
       const splittedDate = date.split("-")
       return `${splittedDate[2]}/${splittedDate[1]}/${splittedDate[0]}`
    },
-   formatAmount(value){
+   formatAmount(value) {
       value = Number(value) * 100
-      return value
+      return Math.round(value)
    },
-   formatCurrency(value) {
-      const signal = Number(value) < 0 ? "-" : ""
+   formatCurrency(value, typeTransaction) {
+      const signal = typeTransaction == "pay" ? "-" : ""
 
       value = String(value).replace(/\D/g, "")
 
@@ -125,28 +137,48 @@ const Form = {
    description: document.querySelector("input#description"),
    amount: document.querySelector("input#amount"),
    date: document.querySelector("input#date"),
+   getTypeTransaction() {
+      const typeTransaction = document.querySelector("input#pay");
+      if (typeTransaction.checked) {
+         return typeTransaction;
+      }
+      else {
+         return document.querySelector("#receive");
+      }
+   },
 
    getValues() {
       return {
          description: Form.description.value,
          amount: Form.amount.value,
          date: Form.date.value,
+         typeTransaction: Form.getTypeTransaction().value,
       }
    },
    validateFields() {
-      const { description, amount, date } = Form.getValues()
-      if (description.trim() === "" || amount.trim() === "" || date === "") {
-         throw new Error("Por favor preencha todos os campos");
+      const { description, amount, date, typeTransaction } = Form.getValues();
+      if (description.trim() === "") {
+         DOM.messageBox("error", "Defina uma descrição ao item para continuar.");
+         throw new Error("Preencha todos os campos.");
+      }else if (amount.trim() === "") {
+         DOM.messageBox("error", "Defina uma quantidade de dinheiro para continuar.");
+         throw new Error("Preencha todos os campos.");
+      }else if (date === "") {
+         DOM.messageBox("error", "Selecione a data do pagamento/recebimento para continuar.");
+         throw new Error("Preencha todos os campos.");
+      }else if (typeTransaction == "") {
+         DOM.messageBox("error", "Selecione se você está pagando algo/alguém ou recebendo o dinheiro para continuar.");
+         throw new Error("Preencha todos os campos.");
       }
    },
    formatValues() {
-      let { description, amount, date } = Form.getValues()
+      let { description, amount, date, typeTransaction } = Form.getValues()
 
       amount = Utils.formatAmount(amount);
 
       date = Utils.formatDate(date);
 
-      return { description, amount, date }
+      return { description, amount, date, typeTransaction }
    },
    clearFields() {
       Form.description.value = ""
@@ -159,10 +191,11 @@ const Form = {
          Form.validateFields();
          const transaction = Form.formatValues();
          Transaction.add(transaction);
+         DOM.messageBox("success",  `Item ${transaction.description} adicionado com sucesso.`)
          Form.clearFields();
-         Modal.Toogle();         
+         Modal.Toogle();
       } catch (error) {
-         alert(error.message)
+
       }
    }
 }

@@ -44,6 +44,7 @@ h2 {
 }
 
 a {
+   cursor: pointer;
    color: var(--green);
    text-decoration: none;
 }
@@ -74,10 +75,16 @@ button:hover {
 
 .button.new {
    display: inline-block;
+
+   cursor: pointer;
+   color: var(--green);
+
    margin-bottom: 0.8rem;
 }
 
 .button.cancel {
+   cursor: pointer;
+
    color: var(--red);
    border: 2px var(--red) solid;
    border-radius: 0.25rem;
@@ -94,7 +101,6 @@ button:hover {
 .button.cancel:hover {
    opacity: 1;
 }
-
 
 header {
    background: #2D4A22;
@@ -253,14 +259,32 @@ input {
    margin-top: 0.8rem;
 }
 
-.input-group small {
-   opacity: 0.4;
+.input-group .help {
+   opacity: 0.7;
 }
 
 .input-group.actions {
    display: flex;
    justify-content: space-between;
    align-items: center;
+}
+
+#pay, #receive {
+   width: 15px;
+   height: 15px;
+}
+
+.input-group.typeTransaction {
+   display: flex;
+   align-items: center;
+   flex-direction: column;
+}	
+
+.input-group .typeTransaction {
+   display: flex;
+   align-items: center;
+   justify-content: left;
+   gap: 0.5rem;
 }
 
 .input-group.actions .button, .input-group.actions button {
@@ -275,6 +299,99 @@ footer {
    opacity: 0.6;
 }
 
+td img{
+   cursor: pointer;
+}
+
+.message {
+   display: none;
+
+   position: absolute;
+   top: 10px;
+   right: 10px;
+   
+   padding: 0.8rem;
+
+   border-radius: 0.25rem;
+}
+
+.message.error {
+   display: inline-block;
+   background: #000000;
+   color: #b30000;
+
+   animation-name: message;
+   animation-duration: 3s;
+   animation-fill-mode: both;
+   
+   overflow: hidden;
+
+   z-index: 2;
+}
+
+.message.success {
+   display: inline-block;
+   
+   background: #2ca001;
+   color: #ffffff;
+
+   animation-name: message;
+   animation-duration: 3s;
+   animation-fill-mode: forwards;
+
+   font-size: 0;
+
+   overflow: hidden;
+
+   z-index: 2;
+}
+
+.message h3 {
+   display: flex;
+   justify-content: space-evenly;
+   align-items: center;
+
+   margin-bottom: 0.4rem;
+
+   animation-name: h3Message;
+   animation-duration: 2s;
+   animation-fill-mode: both;
+   animation-delay: 2s;
+}
+
+.message .progressBar {
+   animation-name: progressBar;
+   animation-duration: 5s;
+   animation-delay: 4s;
+   animation-fill-mode: both;
+}
+
+.progressBar.error {
+   background: #ff0000;
+   border-radius: 0.25rem;
+   
+}
+
+.progressBar.success {
+   background: #ffffff;
+   border-radius: 0.25rem;
+}
+
+@keyframes message {
+   from {width: 0;}
+   to {width: 20rem;}
+}
+
+@keyframes h3Message {
+   from {font-size: 0;}
+   to {font-size: 0.69rem;}
+}
+
+@keyframes progressBar {
+   from {width: 0; height: 0.2rem;}
+   to {width: 100%; height: 0.2rem}
+}
+
 @media (min-width: 800px) {
    html {
       font-size: 87.5%; /* ?px */
@@ -284,5 +401,27 @@ footer {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 2rem;
+   }
+
+   .input-group.typeTransaction {
+      display: flex;
+      justify-content: space-between;  
+      align-items: center;
+      flex-direction: row;
+   }
+
+   @keyframes message {
+      from {width: 0;}
+      to {width: 28rem;}
+   }
+   
+   @keyframes h3Message {
+      from {font-size: 0;}
+      to {font-size: 1rem;}
+   }
+   
+   @keyframes progressBar {
+      from {width: 0; height: 0.2rem;}
+      to {width: 100%; height: 0.2rem}
    }
 }
