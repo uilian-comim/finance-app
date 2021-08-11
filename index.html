@@ -15,10 +15,12 @@
 
 </head>
 
-<body>
+<body onload="loadTheme()">
 
    <header>
       <img src="./assets/logo.svg" alt="Logo Dev Finance">
+      <img id="themeChanger"  title="Trocar tema" onclick="Modal.changeTheme()" src="./assets/adjust-theme.svg"
+            alt="Alterar Tema">
    </header>
 
 
@@ -56,14 +58,15 @@
       <section id="transactions">
          <h2 class="sr-only">Transações</h2>
 
-         <p onclick="Modal.Toogle()" class="button new">+ Nova transação</p>
-
+         <img src="./assets/plus.svg" onclick="Modal.Toogle()" class="button new" alt="Nova transação"
+            title="Adicionar nova transação">
          <table id="data-table">
             <thead>
                <tr>
                   <th>Descrição</th>
                   <th>Valor</th>
                   <th>Data</th>
+                  <th></th>
                   <th></th>
                </tr>
             </thead>
@@ -102,7 +105,42 @@
                </div>
                <div class="input-group actions">
                   <p class="button cancel" onclick="Modal.Toogle()">Cancelar</p>
-                  <button>Salvar</button>
+                  <button class="save">Salvar</button>
+               </div>
+            </form>
+         </div>
+      </div>
+   </div>
+
+   <div class="modal-overlay-edit">
+      <div class="modal">
+         <div id="form">
+            <h2>Nova Transação</h2>
+            <form action="" onsubmit="FormEdit.submit(event)">
+               <div class="input-group">
+                  <label for="description" class="sr-only">Descrição</label>
+                  <input type="text" id="description-edit" name="description" placeholder="Descrição">
+               </div>
+               <div class="input-group typeTransaction">
+                  <p class="help">Você está</p>
+                  <div class="typeTransaction">
+                     <input id="pay-edit" type="radio" name="typeTransaction" value="pay" checked>
+                     <label class="help" for="pay-edit">Pagando</label>
+                     <input id="receive-edit" type="radio" name="typeTransaction" value="receive">
+                     <label class="help" for="receive-edit">Recebendo</label>
+                  </div>
+               </div>
+               <div class="input-group">
+                  <label for="amount" class="sr-only">Valor</label>
+                  <input type="number" id="amount-edit" name="amount" placeholder="0,00" step="0.01">
+               </div>
+               <div class="input-group">
+                  <label for="date" class="sr-only">Data</label>
+                  <input type="date" id="date-edit" name="date">
+               </div>
+               <div class="input-group actions">
+                  <p class="button cancel" onclick="Modal.ToogleEdit()">Cancelar</p>
+                  <button class="save">Salvar</button>
                </div>
             </form>
          </div>
